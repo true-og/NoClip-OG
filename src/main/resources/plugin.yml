@@ -1,0 +1,15 @@
+name: NoClip-OG
+version: 1.0
+author: NotAlexNoyle
+main: plugin.NoClip
+api-version: 1.18
+
+commands:
+  noclip:
+    description: Phase through blocks like in Portal 2!
+    aliases: [nc]
+    
+permissions:
+  noclip.use:
+    description: Permission to phase through blocks.
+    default: op

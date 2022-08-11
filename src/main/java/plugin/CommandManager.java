@@ -1,0 +1,160 @@
+// This is free and unencumbered software released into the public domain.
+// Author: NotAlexNoyle (admin@true-og.net)
+
+package plugin;
+
+import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+// Extends bukkit class to run commands.
+public class CommandManager implements CommandExecutor {
+	
+	// Keep inheritance of command manager private so nothing else can hook into it and run an unrelated command.
+	private static CommandManager instance;
+
+	String chatTag = ChatColor.translateAlternateColorCodes('&', "&8[&aNoClip &4OG&6&8] ");
+
+	// Static getter allows multiple players to be processed through the same class declaration.
+	public static CommandManager getInstance() {
+
+		return instance;
+
+	}
+
+	// Extending method from bukkit's CommandManager.
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+	  
+		// Takes over command execution if plugin is invoked.
+		if (cmd.getName().equalsIgnoreCase("noclip")) {
+
+			// Checks to make sure the command is being run in-game and not in the console.
+			if (sender instanceof Player) {
+    	  
+				// Convert sender to player once it has been determined that they are one.
+				Player player = (Player) sender;
+        
+				// Only run the command in appropriate gamemodes.
+				if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+        	
+					// Make sure the player has permission first.
+					if (player.hasPermission("noclip.use")) {
+		  
+						// Checks whether the "enabled" code has been run for the player yet.
+						if (Listeners.getInstance().noclip.contains(player.getName())) {
+							
+							// Remove player from NoClip mode
+							Listeners.getInstance().noclip.remove(player.getName());
+							// Teleport player to nearest safe location above their head.
+							teleportToSafety(player);
+							// Return player to creative mode so they no longer phase through blocks.
+							player.setGameMode(GameMode.CREATIVE);
+							// Confirm that the plugin has been shut off to the user.
+							player.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(chatTag) + "&6NoClip mode disabled!"));
+				  
+						}
+						// 
+						else {
+			
+							// Keeps track of all players in NoClip mode.
+							Listeners.getInstance().noclip.add(player.getName());
+							// Confirm that the plugin has been turned on to the user.
+							player.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(chatTag) + "&aNoClip mode enabled!"));
+		      
+						}
+				
+					}
+		  
+				}
+				// Do nothing if run from survival mode.
+				else {
+        	
+					player.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(chatTag) + "&cERROR: You must be in creative to use this command!"));
+          
+				} 
+
+			}
+			// Do nothing if run from console.
+			else {
+    	  
+				// Send error message to console.
+				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(chatTag) + "ERROR: The console cannot execute this command!"));
+        
+			}
+
+		}
+    
+		// Healthy exit status.
+		return true;
+
+	}
+
+	// Teleports player to nearest safe (creative) location.
+	// Don't use this for survival, it has no mitigation for lava or other threats.
+	public void teleportToSafety(Player player) {
+
+		// Fetch player location.
+		Location newPlayerLocation = player.getLocation();
+		// Assume location is unsafe before testing it.
+		boolean blockUnsafe = true;
+		while(blockUnsafe) {
+		  
+			// If location is not air...
+			if(locationIsSolid(newPlayerLocation, player)) {
+			  
+				// Move location to check one block up.
+				newPlayerLocation = newPlayerLocation.add(0, 1, 0);
+			  
+			}
+			// Runs if new foot location is safe.
+			else {
+			  
+				// Runs if new head location is unsafe.
+				if(locationIsSolid(newPlayerLocation.add(0, 1, 0), player)) {
+
+					// Keep scanning for a safe location higher up.
+					newPlayerLocation = newPlayerLocation.add(0, 1, 0);
+				  
+				}
+				// Runs if both new head and foot location are safe.
+				else {
+
+					// Makes this the last iteration of the loop.
+					blockUnsafe = false;
+				  
+					// Teleports player to new, safe location.
+					player.teleport(newPlayerLocation);
+					player.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(chatTag) + "&aYou have been teleported to the nearest safe location above you."));
+
+				}
+
+			}
+		  
+		}
+
+	}
+
+
+	// Checks whether block will make player stuck or not.
+	public boolean locationIsSolid(Location location, Player player) {
+	  
+		// If block is unsafe.
+		if(location.getBlock().getType().isSolid()) {
+
+			return true;
+	      
+		}
+		// If block is safe.
+		else {
+
+			return false;
+
+		}
+	  
+	}
+
+}
