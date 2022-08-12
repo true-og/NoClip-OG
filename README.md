@@ -1,8 +1,10 @@
 **NoClip-OG**
 
-![NoClip OG](https://i.imgur.com/HI7rKuT.png)
+![Icon](https://github.com/NotAlexNoyle/NoClip-OG/blob/master/assets/icon.png?raw=true)
 
 *A Spigot plugin that allows you to phase through solid blocks like in Portal 2's console mode!*
+
+![NoClip OG](https://github.com/NotAlexNoyle/NoClip-OG/blob/master/assets/example.png?raw=true)
 
 The most free (as in freedom) and full-featured plugin of it's kind. NoClip-OG will teleport the player to any safe location above them upon exiting NoClip mode, even if it's not the surface of the world.
 
@@ -11,6 +13,8 @@ It works by seamlessly blending together creative and spectator mode. The code i
 Supports LuckPerms, Java 17, and Gradle. Built against Purpur 1.18.2, though it may support other versions as well.
 
 NoClip-OG and all other plugins in the "OG" suite are developed for [TrueOG](https://trueog.net), a 100% free and open source Minecraft Server. Need support? Join our [Discord](https://discord.gg/ma9pMYpBU6) and ask your question in #developer-chat.
+
+All contributors to this repository must sign the Contributor License Agreement. See CLA.txt for details.
 
 Future Enhancements Planned:
 

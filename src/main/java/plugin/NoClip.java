@@ -24,7 +24,7 @@ public class NoClip extends JavaPlugin {
 
 	// Public getter for plugin execution
 	public static NoClip getPlugin() {
-	  
+
 		return instance;
     
 	}
@@ -47,8 +47,8 @@ public class NoClip extends JavaPlugin {
 
 			// Get player out of block-phase (spectator) mode
 			Bukkit.getPlayer(userName).setGameMode(GameMode.CREATIVE);
-		    // Remove player from active list
-		    Listeners.getInstance().noclip.remove(userName);
+			// Remove player from active list
+			Listeners.getInstance().noclip.remove(userName);
 
 		} 
 	}
