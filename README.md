@@ -6,6 +6,8 @@
 
 ![NoClip OG](https://github.com/NotAlexNoyle/NoClip-OG/blob/main/assets/example.png?raw=true)
 
+SpigotMC Listing: https://www.spigotmc.org/resources/noclip-og.104461/ 
+
 The most free (as in freedom) and full-featured plugin of it's kind. NoClip-OG will teleport the player to any safe location above them upon exiting NoClip mode, even if it's not the surface of the world.
 
 It works by seamlessly blending together creative and spectator mode. The code is fully documented, and I am happy to answer any questions you have about it. Pull requests and issues are welcomed.
