@@ -8,27 +8,9 @@ import org.bukkit.GameMode;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-// Extending this class is standard bukkit boilerplate for any plugin, or the server software won't load the classes.
+// Extending this class is standard bukkit boilerplate for any plugin, or else the server software won't load the classes.
 public class NoClip extends JavaPlugin {
 
-
-	// Keep plugin class private so nothing else can use it.
-	private static NoClip instance;
-
-	// Getter for instance of primary class. Each new instance in memory is a new player.
-	public NoClip() {
-	  
-		instance = this;
-    
-	}
-
-	// Public getter for plugin execution
-	public static NoClip getPlugin() {
-
-		return instance;
-    
-	}
- 
 	// What to do when the plugin is run by the server.
 	public void onEnable() {
 

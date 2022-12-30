@@ -26,7 +26,7 @@ public class CommandManager implements CommandExecutor {
 
 	}
 
-	// Extending method from bukkit's CommandManager.
+	// Command execution event handler extending bukkit's CommandManager
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 	  
 		// Takes over command execution if plugin is invoked.

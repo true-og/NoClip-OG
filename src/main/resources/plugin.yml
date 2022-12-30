@@ -1,8 +1,10 @@
 name: NoClip-OG
-version: 1.0
 author: NotAlexNoyle
-main: plugin.NoClip
+description: A Spigot plugin that allows you to phase through solid blocks like in Portal 2's console mode!
+website: https://github.com/NotAlexNoyle/NoClip-OG
+version: 1.0
 api-version: 1.18
+main: plugin.NoClip
 
 commands:
   noclip:
