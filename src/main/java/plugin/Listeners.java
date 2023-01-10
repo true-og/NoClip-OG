@@ -22,18 +22,18 @@ public class Listeners implements Listener {
 	public ArrayList<String> noclip = new ArrayList<>();;
 	// Declare bukkit object to determine whether a player is intentionally trying to phase into a block or not
 	private final BlockFace[] surrounding;
-  
+
 	// Allow phasing into a block from any direction
 	public Listeners() {
 
-	    this.surrounding = new BlockFace[] { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
-	    instance = this;
+		this.surrounding = new BlockFace[] { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST, BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
+		instance = this;
 
 	}
 
 	// Return instance of class as static so multiple players can use it.
 	public static Listeners getInstance() {
-	  
+
 		return instance;
 
 	}
@@ -41,7 +41,7 @@ public class Listeners implements Listener {
 	// Hooks player movement event
 	@EventHandler
 	public void onNearBlock(PlayerMoveEvent playerMovement) {
-		
+
 		// Derive the relevant player object from their movement event
 		Player player = playerMovement.getPlayer();
 
@@ -51,16 +51,16 @@ public class Listeners implements Listener {
 			// If player is trying to phase into a block, do this
 			if (nearBlock(player)) {
 
-				  // Use spectator mode to enable phasing
-			      player.setGameMode(GameMode.SPECTATOR);
-			      
-			}
-		    else {
+				// Use spectator mode to enable phasing
+				player.setGameMode(GameMode.SPECTATOR);
 
-		    	  // User creative mode to disable phasing
-			      player.setGameMode(GameMode.CREATIVE);
-			      
-		    }  
+			}
+			else {
+
+				// User creative mode to disable phasing
+				player.setGameMode(GameMode.CREATIVE);
+
+			}  
 
 		}
 
@@ -78,51 +78,51 @@ public class Listeners implements Listener {
 
 			// Remove player from NoClip mode
 			Listeners.getInstance().noclip.remove(player.getName());
-	        // Set gamemode back to survival upon death
-	        player.setGameMode(GameMode.SURVIVAL);
-	
+			// Set gamemode back to survival upon death
+			player.setGameMode(GameMode.SURVIVAL);
+
 		} 
-	
+
 	}
 
 	// Determine if a player is trying to phase into their environment
 	public boolean nearBlock(Player player) {
-		
+
 		// Declare array to hold block locations at and near the player
-	    Location[] nearby = {
-	    	player.getLocation(), 
-	        player.getLocation().add(0.0D, 1.0D, 0.0D), 
-	        player.getLocation().add(0.0D, 2.0D, 0.0D) 
-	    };
+		Location[] nearby = {
+				player.getLocation(), 
+				player.getLocation().add(0.0D, 1.0D, 0.0D), 
+				player.getLocation().add(0.0D, 2.0D, 0.0D) 
+		};
 
-	    // First loop runs as many times as there are locations near and at the player which we have declared in the nearby array
-	    for (int i = 0; i < nearby.length; i++) {
+		// First loop runs as many times as there are locations near and at the player which we have declared in the nearby array
+		for (int i = 0; i < nearby.length; i++) {
 
-	        // Feed surrounding block faces into an array for evaluation
-	        BlockFace[] arrayOfBlockFace = this.surrounding;
-	        // Second loop evaluates all relevant block faces at current frame of reference
-	        for (int j = 0; j < arrayOfBlockFace.length; j++) {
+			// Feed surrounding block faces into an array for evaluation
+			BlockFace[] arrayOfBlockFace = this.surrounding;
+			// Second loop evaluates all relevant block faces at current frame of reference
+			for (int j = 0; j < arrayOfBlockFace.length; j++) {
 
-	        	// Isolates the block face to phase into
-	        	BlockFace staringAt = arrayOfBlockFace[j];
+				// Isolates the block face to phase into
+				BlockFace staringAt = arrayOfBlockFace[j];
 
-	        	// If the block is solid, initiate the phase
-	        	if (! nearby[i].getBlock().getRelative(staringAt, 1).isEmpty()) {
-	        	
-	        		// Player is near block and wants to phase into it
-	        		return true;
-	        	
-	        	}
+				// If the block is solid, initiate the phase
+				if (! nearby[i].getBlock().getRelative(staringAt, 1).isEmpty()) {
 
-	        }
+					// Player is near block and wants to phase into it
+					return true;
 
-	    } 
+				}
 
-	    // If nearby blocks are not empty, player is near a block
+			}
+
+		} 
+
+		// If nearby blocks are not empty, player is near a block
 		if (! player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().isEmpty() || ! player.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock().isEmpty()) {
 
 			return true; 
-    
+
 		}
 
 		// None of the conditions have been met for phasing

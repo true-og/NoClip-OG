@@ -15,15 +15,15 @@ public class NoClip extends JavaPlugin {
 	public void onEnable() {
 
 		// Register the instantiation of the plugin (triggers loading with messages in console).
-		Bukkit.getServer().getPluginManager().registerEvents(new Listeners(), (Plugin) this);
+		getServer().getPluginManager().registerEvents(new Listeners(), (Plugin) this);
 		// Run command when plugin event is triggered.
 		getCommand("noclip").setExecutor(new CommandManager());
-    
+
 	}
-	
+
 	// What to do when the plugin is disabled by the server (such as during a reboot).
 	public void onDisable() {
-		
+
 		// Loop runs once for every player in NoClip mode
 		for (String userName : Listeners.getInstance().noclip) {
 
@@ -32,7 +32,7 @@ public class NoClip extends JavaPlugin {
 			// Remove player from active list
 			Listeners.getInstance().noclip.remove(userName);
 
-		} 
+		}
 	}
-  
+
 }
