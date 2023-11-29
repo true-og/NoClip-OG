@@ -3,7 +3,6 @@
 
 package plugin;
 
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -11,13 +10,14 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+
 // Extends bukkit class to run commands.
 public class CommandManager implements CommandExecutor {
 
 	// Keep inheritance of command manager private so nothing else can hook into it and run an unrelated command.
 	private static CommandManager instance;
-
-	String chatTag = ChatColor.translateAlternateColorCodes('&', "&8[&aNoClip &4OG&6&8] ");
 
 	// Static getter allows multiple players to be processed through the same class declaration.
 	public static CommandManager getInstance() {
@@ -28,6 +28,11 @@ public class CommandManager implements CommandExecutor {
 
 	// Command execution event handler extending bukkit's CommandManager
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
+		// Create a colored Prefix using the Minimessage API.
+		String chatPrefix = "&8[&aNoClip &4OG&6&8] ";		
+		TextComponent chatPrefixContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(chatPrefix);
+		String coloredChatPrefix = chatPrefixContainer.content();
 
 		// Takes over command execution if plugin is invoked.
 		if (cmd.getName().equalsIgnoreCase("noclip")) {
@@ -50,11 +55,17 @@ public class CommandManager implements CommandExecutor {
 							// Remove player from NoClip mode
 							Listeners.getInstance().noclip.remove(player.getName());
 							// Teleport player to nearest safe location above their head.
-							teleportToSafety(player);
+							teleportToSafety(player, coloredChatPrefix);
 							// Return player to creative mode so they no longer phase through blocks.
 							player.setGameMode(GameMode.CREATIVE);
+
+							// Create a colored disabled message using the TextComponent API.
+							String disabledMessage = "&6NoClip mode disabled!";		
+							TextComponent disabledMessageContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(disabledMessage);
+							String coloredDisabledMessage = disabledMessageContainer.content();
+
 							// Confirm that the plugin has been shut off to the user.
-							player.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(chatTag) + "&6NoClip mode disabled!"));
+							player.sendMessage(coloredDisabledMessage);
 
 						}
 						// 
@@ -62,8 +73,14 @@ public class CommandManager implements CommandExecutor {
 
 							// Keeps track of all players in NoClip mode.
 							Listeners.getInstance().noclip.add(player.getName());
+
+							// Create a colored enabled message using the TextComponent API.
+							String enabledMessage = "&aNoClip mode enabled!";		
+							TextComponent enabledMessageContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(enabledMessage);
+							String coloredEnabledMessage = enabledMessageContainer.content();
+
 							// Confirm that the plugin has been turned on to the user.
-							player.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(chatTag) + "&aNoClip mode enabled!"));
+							player.sendMessage(coloredEnabledMessage);
 
 						}
 
@@ -73,7 +90,13 @@ public class CommandManager implements CommandExecutor {
 				// Do nothing if run from survival mode.
 				else {
 
-					player.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(chatTag) + "&cERROR: You must be in creative to use this command!"));
+					// Create a colored gamemode error message using the TextComponent API.
+					String gamemodeErrorMessage = "&cERROR: You must be in creative to use this command!";		
+					TextComponent gamemodeErrorContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(gamemodeErrorMessage);
+					String coloredGamemodeErrorMessage = gamemodeErrorContainer.content();
+
+					// Send the error message to the player.
+					player.sendMessage(coloredGamemodeErrorMessage);
 
 				} 
 
@@ -82,7 +105,7 @@ public class CommandManager implements CommandExecutor {
 			else {
 
 				// Send error message to console.
-				sender.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(chatTag) + "ERROR: The console cannot execute this command!"));
+				sender.sendMessage("ERROR: The console cannot execute this command!");
 
 			}
 
@@ -95,7 +118,7 @@ public class CommandManager implements CommandExecutor {
 
 	// Teleports player to nearest safe (creative) location.
 	// Don't use this for survival, it has no mitigation for lava or other threats.
-	public void teleportToSafety(Player player) {
+	public void teleportToSafety(Player player, String chatPrefix) {
 
 		// Fetch player location.
 		Location newPlayerLocation = player.getLocation();
@@ -126,9 +149,16 @@ public class CommandManager implements CommandExecutor {
 					// Makes this the last iteration of the loop.
 					blockUnsafe = false;
 
-					// Teleports player to new, safe location.
+					// Teleports the player to a new, safe location above them.
 					player.teleport(newPlayerLocation);
-					player.sendMessage(ChatColor.translateAlternateColorCodes('&', String.valueOf(chatTag) + "&aYou have been teleported to the nearest safe location above you."));
+
+					// Create a colored disabled message using the TextComponent API.
+					String nearesetSafeLocationMessage = "&aYou have been teleported to the nearest safe location above you.";		
+					TextComponent nearesetSafeLocationContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(nearesetSafeLocationMessage);
+					String coloredNearesetSafeLocationMessage = nearesetSafeLocationContainer.content();
+
+					// Inform the player that their return teleport location has changed.
+					player.sendMessage(coloredNearesetSafeLocationMessage);
 
 				}
 
