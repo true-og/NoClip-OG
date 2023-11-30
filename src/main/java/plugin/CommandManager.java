@@ -32,7 +32,6 @@ public class CommandManager implements CommandExecutor {
 		// Create a colored Prefix using the Minimessage API.
 		String chatPrefix = "&8[&aNoClip &4OG&6&8] ";		
 		TextComponent chatPrefixContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(chatPrefix);
-		String coloredChatPrefix = chatPrefixContainer.content();
 
 		// Takes over command execution if plugin is invoked.
 		if (cmd.getName().equalsIgnoreCase("noclip")) {
@@ -55,17 +54,16 @@ public class CommandManager implements CommandExecutor {
 							// Remove player from NoClip mode
 							Listeners.getInstance().noclip.remove(player.getName());
 							// Teleport player to nearest safe location above their head.
-							teleportToSafety(player, coloredChatPrefix);
+							teleportToSafety(player, chatPrefixContainer);
 							// Return player to creative mode so they no longer phase through blocks.
 							player.setGameMode(GameMode.CREATIVE);
 
 							// Create a colored disabled message using the TextComponent API.
 							String disabledMessage = "&6NoClip mode disabled!";		
 							TextComponent disabledMessageContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(disabledMessage);
-							String coloredDisabledMessage = disabledMessageContainer.content();
 
 							// Confirm that the plugin has been shut off to the user.
-							player.sendMessage(coloredDisabledMessage);
+							player.sendMessage(disabledMessageContainer);
 
 						}
 						// 
@@ -77,10 +75,9 @@ public class CommandManager implements CommandExecutor {
 							// Create a colored enabled message using the TextComponent API.
 							String enabledMessage = "&aNoClip mode enabled!";		
 							TextComponent enabledMessageContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(enabledMessage);
-							String coloredEnabledMessage = enabledMessageContainer.content();
 
 							// Confirm that the plugin has been turned on to the user.
-							player.sendMessage(coloredEnabledMessage);
+							player.sendMessage(enabledMessageContainer);
 
 						}
 
@@ -93,10 +90,9 @@ public class CommandManager implements CommandExecutor {
 					// Create a colored gamemode error message using the TextComponent API.
 					String gamemodeErrorMessage = "&cERROR: You must be in creative to use this command!";		
 					TextComponent gamemodeErrorContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(gamemodeErrorMessage);
-					String coloredGamemodeErrorMessage = gamemodeErrorContainer.content();
 
 					// Send the error message to the player.
-					player.sendMessage(coloredGamemodeErrorMessage);
+					player.sendMessage(gamemodeErrorContainer);
 
 				} 
 
@@ -118,7 +114,7 @@ public class CommandManager implements CommandExecutor {
 
 	// Teleports player to nearest safe (creative) location.
 	// Don't use this for survival, it has no mitigation for lava or other threats.
-	public void teleportToSafety(Player player, String chatPrefix) {
+	public void teleportToSafety(Player player, TextComponent chatPrefix) {
 
 		// Fetch player location.
 		Location newPlayerLocation = player.getLocation();

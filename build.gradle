@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "net.trueog.noclip-og"
-version = "1.1"
+version = "1.1.1"
 
 def apiVersion = "1.19.4" // Declare minecraft server target version.
 def targetJavaVersion = "17" // Declare java compatibility minimum.
