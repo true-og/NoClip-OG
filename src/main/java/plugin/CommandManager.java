@@ -48,6 +48,8 @@ public class CommandManager implements CommandExecutor {
 					// Make sure the player has permission first.
 					if (player.hasPermission("noclip.use")) {
 
+						// TODO: Update gradle
+						// TODO: Add prefix to messages
 						// Checks whether the "enabled" code has been run for the player yet.
 						if (Listeners.getInstance().noclip.contains(player.getName())) {
 
@@ -59,8 +61,8 @@ public class CommandManager implements CommandExecutor {
 							player.setGameMode(GameMode.CREATIVE);
 
 							// Create a colored disabled message using the TextComponent API.
-							String disabledMessage = "&6NoClip mode disabled!";		
-							TextComponent disabledMessageContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(disabledMessage);
+							String disabledMessage = chatPrefix + "&6NoClip mode disabled!";		
+							TextComponent disabledMessageContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(chatPrefixdisabledMessage);
 
 							// Confirm that the plugin has been shut off to the user.
 							player.sendMessage(disabledMessageContainer);
@@ -73,7 +75,7 @@ public class CommandManager implements CommandExecutor {
 							Listeners.getInstance().noclip.add(player.getName());
 
 							// Create a colored enabled message using the TextComponent API.
-							String enabledMessage = "&aNoClip mode enabled!";		
+							String enabledMessage = chatPrefix + "&aNoClip mode enabled!";		
 							TextComponent enabledMessageContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(enabledMessage);
 
 							// Confirm that the plugin has been turned on to the user.
@@ -88,20 +90,20 @@ public class CommandManager implements CommandExecutor {
 				else {
 
 					// Create a colored gamemode error message using the TextComponent API.
-					String gamemodeErrorMessage = "&cERROR: You must be in creative to use this command!";		
+					String gamemodeErrorMessage = chatPrefix + "&cERROR: You must be in creative to use this command!";		
 					TextComponent gamemodeErrorContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(gamemodeErrorMessage);
 
 					// Send the error message to the player.
 					player.sendMessage(gamemodeErrorContainer);
 
-				} 
+				}
 
 			}
 			// Do nothing if run from console.
 			else {
 
 				// Send error message to console.
-				sender.sendMessage("ERROR: The console cannot execute this command!");
+				sender.sendMessage("[NoClip-OG] ERROR: The console cannot execute this command!");
 
 			}
 
@@ -149,12 +151,11 @@ public class CommandManager implements CommandExecutor {
 					player.teleport(newPlayerLocation);
 
 					// Create a colored disabled message using the TextComponent API.
-					String nearesetSafeLocationMessage = "&aYou have been teleported to the nearest safe location above you.";		
+					String nearesetSafeLocationMessage = chatPrefix + "&aYou have been teleported to the nearest safe location above you.";		
 					TextComponent nearesetSafeLocationContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(nearesetSafeLocationMessage);
-					String coloredNearesetSafeLocationMessage = nearesetSafeLocationContainer.content();
 
 					// Inform the player that their return teleport location has changed.
-					player.sendMessage(coloredNearesetSafeLocationMessage);
+					player.sendMessage(nearesetSafeLocationContainer);
 
 				}
 
