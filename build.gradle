@@ -1,12 +1,13 @@
 plugins {
 
-    id "java" // Tell gradle this is a java project.
-    id "com.github.johnrengelman.shadow" version "7.1.2" // Import utility to package libraries into .jar file.
+    id 'java' // Tell gradle this is a java project.
+    id 'com.github.johnrengelman.shadow' version '7.1.2' // Import utility to package libraries into .jar file.
+    id 'eclipse' // Import eclipse plugin for IDE integration.
 
 }
 
-group = "net.trueog.noclip-og"
-version = "1.1.1"
+group = 'net.trueog.noclip-og' // Declare bundle identifier.
+version = '1.2 // Declare plugin version (will be in .jar).
 
 def apiVersion = "1.19.4" // Declare minecraft server target version.
 def targetJavaVersion = 17 // Declare java compatibility minimum.
@@ -39,12 +40,19 @@ repositories {
         url "https://repo.purpurmc.org/snapshots" // Get purpur API from purpur maven repository.
 
     }
+    
+    maven {
+    
+        url "https://jitpack.io"
+    
+    }
 
 }
 
 dependencies {
 
     compileOnly "org.purpurmc.purpur:purpur-api:1.19.4-R0.1-SNAPSHOT" // Declare purpur API version to be packaged.
+    implementation "com.github.christianniehaus:Utilities-OG:e9ebc26c1f" // Import Utilities-OG API.
 
 }
 
@@ -58,20 +66,20 @@ jar.dependsOn shadowJar
 
 tasks.jar.configure {
 
-    classifier = "part"
-    
+    archiveClassifier = "part"
+
 }
 
 tasks.shadowJar.configure {
 
-    classifier = null
+    archiveClassifier = null
 
 }
 
-compileJava {
+tasks.withType(JavaCompile).configureEach {
 
     options.compilerArgs += ["-parameters"]
-    options.fork = true
-    options.forkOptions.executable = 'javac'
+    options.encoding = 'UTF-8' // Override the system character set with a universal set.
+    options.fork = true // Enable compilation in a separate daemon process.
 
 }
