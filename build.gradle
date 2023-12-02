@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'net.trueog.noclip-og' // Declare bundle identifier.
-version = '1.2 // Declare plugin version (will be in .jar).
+version = '1.2' // Declare plugin version (will be in .jar).
 
 def apiVersion = "1.19.4" // Declare minecraft server target version.
 def targetJavaVersion = 17 // Declare java compatibility minimum.
