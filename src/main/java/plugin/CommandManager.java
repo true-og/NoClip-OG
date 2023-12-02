@@ -48,8 +48,6 @@ public class CommandManager implements CommandExecutor {
 					// Make sure the player has permission first.
 					if (player.hasPermission("noclip.use")) {
 
-						// TODO: Update gradle
-						// TODO: Add prefix to messages
 						// Checks whether the "enabled" code has been run for the player yet.
 						if (Listeners.getInstance().noclip.contains(player.getName())) {
 
@@ -62,7 +60,7 @@ public class CommandManager implements CommandExecutor {
 
 							// Create a colored disabled message using the TextComponent API.
 							String disabledMessage = chatPrefix + "&6NoClip mode disabled!";		
-							TextComponent disabledMessageContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(chatPrefixdisabledMessage);
+							TextComponent disabledMessageContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(disabledMessage);
 
 							// Confirm that the plugin has been shut off to the user.
 							player.sendMessage(disabledMessageContainer);
