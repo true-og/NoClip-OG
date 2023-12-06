@@ -31,7 +31,6 @@ public class CommandManager implements CommandExecutor {
 
 		// Create a colored Prefix using the Minimessage API.
 		String chatPrefix = "&8[&aNoClip &4OG&6&8] ";		
-		TextComponent chatPrefixContainer = LegacyComponentSerializer.legacyAmpersand().deserialize(chatPrefix);
 
 		// Takes over command execution if plugin is invoked.
 		if (cmd.getName().equalsIgnoreCase("noclip")) {
@@ -54,7 +53,7 @@ public class CommandManager implements CommandExecutor {
 							// Remove player from NoClip mode
 							Listeners.getInstance().noclip.remove(player.getName());
 							// Teleport player to nearest safe location above their head.
-							teleportToSafety(player, chatPrefixContainer);
+							teleportToSafety(player, chatPrefix);
 							// Return player to creative mode so they no longer phase through blocks.
 							player.setGameMode(GameMode.CREATIVE);
 
@@ -114,7 +113,7 @@ public class CommandManager implements CommandExecutor {
 
 	// Teleports player to nearest safe (creative) location.
 	// Don't use this for survival, it has no mitigation for lava or other threats.
-	public void teleportToSafety(Player player, TextComponent chatPrefix) {
+	public void teleportToSafety(Player player, String chatPrefix) {
 
 		// Fetch player location.
 		Location newPlayerLocation = player.getLocation();
