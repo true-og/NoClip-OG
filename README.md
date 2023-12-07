@@ -1,10 +1,10 @@
 **NoClip-OG**
 
-![Icon](https://github.com/NotAlexNoyle/NoClip-OG/blob/master/assets/icon.png?raw=true)
+![Icon](https://github.com/NotAlexNoyle/NoClip-OG/blob/main/assets/icon.png)
 
 *A Spigot plugin that allows you to phase through solid blocks like in Portal 2's console mode!*
 
-![NoClip OG](https://github.com/NotAlexNoyle/NoClip-OG/blob/master/assets/example.png?raw=true)
+![NoClip OG](https://github.com/NotAlexNoyle/NoClip-OG/blob/main/assets/example.png)
 
 The most free (as in freedom) and full-featured plugin of it's kind. NoClip-OG will teleport the player to any safe location above them upon exiting NoClip mode, even if it's not the surface of the world.
 
