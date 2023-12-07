@@ -28,6 +28,4 @@ Future Enhancements Planned:
 
 - When the server is halted, players who were inside blocks should be teleported to a safe location or kept in NoClip mode
 
-Changelog:
-
-v1.0 - Initial Release
+Changelog [here](https://github.com/NotAlexNoyle/NoClip-OG/blob/main/CHANGELOG.md).
