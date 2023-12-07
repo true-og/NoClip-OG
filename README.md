@@ -10,7 +10,7 @@ The most free (as in freedom) and full-featured plugin of it's kind. NoClip-OG w
 
 It works by seamlessly blending together creative and spectator mode. The code is fully documented, and I am happy to answer any questions you have about it. Pull requests and issues are welcomed.
 
-Supports LuckPerms, Java 17, and Gradle. Built against Purpur 1.18.2, though it may support other versions as well.
+Supports LuckPerms, Java 17, and Gradle. Built against Purpur 1.19.4, though it may support later versions as well.
 
 NoClip-OG and all other plugins in the "OG" suite are developed for [TrueOG](https://trueog.net), a 100% free and open source Minecraft Server. Need support? Join our [Discord](https://discord.gg/ma9pMYpBU6) and ask your question in #developer-chat.
 
