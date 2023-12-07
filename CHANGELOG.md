@@ -1,8 +1,8 @@
-**1.1.1:
+**1.2.1:
 
 Fix chat colors and prefix
 
-**1.1:
+**1.2:
 
 1.19.4 Update
 
