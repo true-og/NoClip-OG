@@ -15,13 +15,16 @@ import org.bukkit.entity.Player;
 // Extends bukkit class to run commands.
 public class CommandManager implements CommandExecutor {
 
-    // Keep inheritance of command manager private so nothing else can hook into it and run an unrelated command.
+    // Keep inheritance of command manager private so nothing else can hook into it
+    // and run an unrelated command.
     private static CommandManager instance;
 
-    // Static getter allows multiple players to be processed through the same class declaration.
+    // Static getter allows multiple players to be processed through the same class
+    // declaration.
     public static CommandManager getInstance() {
 
         return instance;
+
     }
 
     // Command execution event handler extending bukkit's CommandManager
@@ -57,8 +60,8 @@ public class CommandManager implements CommandExecutor {
 
                             // Create a colored disabled message using the TextComponent API.
                             String disabledMessage = chatPrefix + "&6NoClip mode disabled!";
-                            TextComponent disabledMessageContainer =
-                                    LegacyComponentSerializer.legacyAmpersand().deserialize(disabledMessage);
+                            TextComponent disabledMessageContainer = LegacyComponentSerializer.legacyAmpersand()
+                                    .deserialize(disabledMessage);
 
                             // Confirm that the plugin has been shut off to the user.
                             player.sendMessage(disabledMessageContainer);
@@ -72,12 +75,14 @@ public class CommandManager implements CommandExecutor {
 
                             // Create a colored enabled message using the TextComponent API.
                             String enabledMessage = chatPrefix + "&aNoClip mode enabled!";
-                            TextComponent enabledMessageContainer =
-                                    LegacyComponentSerializer.legacyAmpersand().deserialize(enabledMessage);
+                            TextComponent enabledMessageContainer = LegacyComponentSerializer.legacyAmpersand()
+                                    .deserialize(enabledMessage);
 
                             // Confirm that the plugin has been turned on to the user.
                             player.sendMessage(enabledMessageContainer);
+
                         }
+
                     }
 
                 }
@@ -86,11 +91,12 @@ public class CommandManager implements CommandExecutor {
 
                     // Create a colored gamemode error message using the TextComponent API.
                     String gamemodeErrorMessage = chatPrefix + "&cERROR: You must be in creative to use this command!";
-                    TextComponent gamemodeErrorContainer =
-                            LegacyComponentSerializer.legacyAmpersand().deserialize(gamemodeErrorMessage);
+                    TextComponent gamemodeErrorContainer = LegacyComponentSerializer.legacyAmpersand()
+                            .deserialize(gamemodeErrorMessage);
 
                     // Send the error message to the player.
                     player.sendMessage(gamemodeErrorContainer);
+
                 }
 
             }
@@ -99,11 +105,14 @@ public class CommandManager implements CommandExecutor {
 
                 // Send error message to console.
                 sender.sendMessage("[NoClip-OG] ERROR: The console cannot execute this command!");
+
             }
+
         }
 
         // Healthy exit status.
         return true;
+
     }
 
     // Teleports player to nearest safe (creative) location.
@@ -143,16 +152,20 @@ public class CommandManager implements CommandExecutor {
                     player.teleport(newPlayerLocation);
 
                     // Create a colored disabled message using the TextComponent API.
-                    String nearesetSafeLocationMessage =
-                            chatPrefix + "&aYou have been teleported to the nearest safe location above you.";
-                    TextComponent nearesetSafeLocationContainer =
-                            LegacyComponentSerializer.legacyAmpersand().deserialize(nearesetSafeLocationMessage);
+                    String nearesetSafeLocationMessage = chatPrefix
+                            + "&aYou have been teleported to the nearest safe location above you.";
+                    TextComponent nearesetSafeLocationContainer = LegacyComponentSerializer.legacyAmpersand()
+                            .deserialize(nearesetSafeLocationMessage);
 
                     // Inform the player that their return teleport location has changed.
                     player.sendMessage(nearesetSafeLocationContainer);
+
                 }
+
             }
+
         }
+
     }
 
     // Checks whether block will make player stuck or not.
@@ -168,6 +181,9 @@ public class CommandManager implements CommandExecutor {
         else {
 
             return false;
+
         }
+
     }
+
 }

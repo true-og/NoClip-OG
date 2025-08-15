@@ -18,31 +18,25 @@ public class Listeners implements Listener {
     // Declare instance of class as static so multiple players can use it.
     private static Listeners instance;
     // Declare object to hold players in NoClip mode in memory
-    public ArrayList<String> noclip = new ArrayList<>();
-    ;
-    // Declare bukkit object to determine whether a player is intentionally trying to phase into a block or not
+    public ArrayList<String> noclip = new ArrayList<>();;
+    // Declare bukkit object to determine whether a player is intentionally trying
+    // to phase into a block or not
     private final BlockFace[] surrounding;
 
     // Allow phasing into a block from any direction
     public Listeners() {
 
-        this.surrounding = new BlockFace[] {
-            BlockFace.NORTH,
-            BlockFace.NORTH_EAST,
-            BlockFace.EAST,
-            BlockFace.SOUTH_EAST,
-            BlockFace.SOUTH,
-            BlockFace.SOUTH_WEST,
-            BlockFace.WEST,
-            BlockFace.NORTH_WEST
-        };
+        this.surrounding = new BlockFace[] { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST,
+                BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
         instance = this;
+
     }
 
     // Return instance of class as static so multiple players can use it.
     public static Listeners getInstance() {
 
         return instance;
+
     }
 
     // Hooks player movement event
@@ -52,9 +46,11 @@ public class Listeners implements Listener {
         // Derive the relevant player object from their movement event
         Player player = playerMovement.getPlayer();
 
-        // If player is not in survival AND they have a registered NoClip instance in the array list
+        // If player is not in survival AND they have a registered NoClip instance in
+        // the array list
         if ((player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR)
-                && this.noclip.contains(player.getName())) {
+                && this.noclip.contains(player.getName()))
+        {
 
             // If player is trying to phase into a block, do this
             if (nearBlock(player)) {
@@ -66,8 +62,11 @@ public class Listeners implements Listener {
 
                 // User creative mode to disable phasing
                 player.setGameMode(GameMode.CREATIVE);
+
             }
+
         }
+
     }
 
     // Hook player death listener
@@ -84,20 +83,20 @@ public class Listeners implements Listener {
             Listeners.getInstance().noclip.remove(player.getName());
             // Set gamemode back to survival upon death
             player.setGameMode(GameMode.SURVIVAL);
+
         }
+
     }
 
     // Determine if a player is trying to phase into their environment
     public boolean nearBlock(Player player) {
 
         // Declare array to hold block locations at and near the player
-        Location[] nearby = {
-            player.getLocation(),
-            player.getLocation().add(0.0D, 1.0D, 0.0D),
-            player.getLocation().add(0.0D, 2.0D, 0.0D)
-        };
+        Location[] nearby = { player.getLocation(), player.getLocation().add(0.0D, 1.0D, 0.0D),
+                player.getLocation().add(0.0D, 2.0D, 0.0D) };
 
-        // First loop runs as many times as there are locations near and at the player which we have declared in the
+        // First loop runs as many times as there are locations near and at the player
+        // which we have declared in the
         // nearby array
         for (int i = 0; i < nearby.length; i++) {
 
@@ -114,18 +113,25 @@ public class Listeners implements Listener {
 
                     // Player is near block and wants to phase into it
                     return true;
+
                 }
+
             }
+
         }
 
         // If nearby blocks are not empty, player is near a block
         if (!player.getLocation().add(0.0D, 2.0D, 0.0D).getBlock().isEmpty()
-                || !player.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock().isEmpty()) {
+                || !player.getLocation().subtract(0.0D, 1.0D, 0.0D).getBlock().isEmpty())
+        {
 
             return true;
+
         }
 
         // None of the conditions have been met for phasing
         return false;
+
     }
+
 }
