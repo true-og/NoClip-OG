@@ -55,13 +55,23 @@ public class Listeners implements Listener {
             // If player is trying to phase into a block, do this
             if (nearBlock(player)) {
 
-                // Use spectator mode to enable phasing
-                player.setGameMode(GameMode.SPECTATOR);
+                // Use spectator mode to enable phasing (skip if already set to avoid
+                // firing PlayerGameModeChangeEvent every tick, which can spam listeners
+                // on other plugins that restrict spectator mode)
+                if (player.getGameMode() != GameMode.SPECTATOR) {
+
+                    player.setGameMode(GameMode.SPECTATOR);
+
+                }
 
             } else {
 
-                // User creative mode to disable phasing
-                player.setGameMode(GameMode.CREATIVE);
+                // Use creative mode to disable phasing (skip if already set)
+                if (player.getGameMode() != GameMode.CREATIVE) {
+
+                    player.setGameMode(GameMode.CREATIVE);
+
+                }
 
             }
 
