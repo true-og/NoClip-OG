@@ -5,6 +5,7 @@ website: https://github.com/NotAlexNoyle/NoClip-OG
 version: '${version}'
 api-version: '${apiVersion}'
 main: plugin.NoClip
+softdepend: [GameModeInventories-OG]
 
 commands:
   noclip:
