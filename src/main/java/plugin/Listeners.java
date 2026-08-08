@@ -3,39 +3,31 @@
 
 package plugin;
 
-import java.util.ArrayList;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class Listeners implements Listener {
 
-    // Declare instance of class as static so multiple players can use it.
-    private static Listeners instance;
-    // Declare object to hold players in NoClip mode in memory
-    public ArrayList<String> noclip = new ArrayList<>();;
+    // Shared NoClip state, owned by the plugin and injected here.
+    private final NoClipManager manager;
     // Declare bukkit object to determine whether a player is intentionally trying
     // to phase into a block or not
     private final BlockFace[] surrounding;
 
     // Allow phasing into a block from any direction
-    public Listeners() {
+    public Listeners(NoClipManager manager) {
 
+        this.manager = manager;
         this.surrounding = new BlockFace[] { BlockFace.NORTH, BlockFace.NORTH_EAST, BlockFace.EAST,
                 BlockFace.SOUTH_EAST, BlockFace.SOUTH, BlockFace.SOUTH_WEST, BlockFace.WEST, BlockFace.NORTH_WEST };
-        instance = this;
-
-    }
-
-    // Return instance of class as static so multiple players can use it.
-    public static Listeners getInstance() {
-
-        return instance;
 
     }
 
@@ -44,12 +36,11 @@ public class Listeners implements Listener {
     public void onNearBlock(PlayerMoveEvent playerMovement) {
 
         // Derive the relevant player object from their movement event
-        Player player = playerMovement.getPlayer();
+        final Player player = playerMovement.getPlayer();
 
-        // If player is not in survival AND they have a registered NoClip instance in
-        // the array list
+        // If player is not in survival AND they have a registered NoClip instance
         if ((player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR)
-                && this.noclip.contains(player.getName()))
+                && manager.isNoClipping(player.getUniqueId()))
         {
 
             // If player is trying to phase into a block, do this
@@ -84,15 +75,37 @@ public class Listeners implements Listener {
     public void onPlayerDeath(PlayerDeathEvent playerThatDied) {
 
         // Derive player object from their death event
-        Player player = playerThatDied.getEntity();
+        final Player player = playerThatDied.getEntity();
 
-        // If player has a NoClip instance in the array list...
-        if (Listeners.getInstance().noclip.contains(player.getName())) {
+        // If player has a NoClip instance in the set...
+        if (manager.exitNoClip(player)) {
 
-            // Remove player from NoClip mode
-            Listeners.getInstance().noclip.remove(player.getName());
             // Set gamemode back to survival upon death
             player.setGameMode(GameMode.SURVIVAL);
+
+        }
+
+    }
+
+    // MONITOR so Spawn-OG's LOWEST-priority quit snapshot reads NoClip state
+    // before it is cleared here. Kicks funnel into this same quit event; a
+    // dedicated kick handler would run before that snapshot and corrupt it.
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerQuit(PlayerQuitEvent playerThatQuit) {
+
+        // Derive player object from their quit event
+        final Player player = playerThatQuit.getPlayer();
+
+        // If player has a NoClip instance in the set...
+        if (manager.exitNoClip(player)) {
+
+            // Leave creative behind, never spectator, so a relog on a server
+            // without Spawn-OG does not strand the player phased into a block.
+            if (player.getGameMode() != GameMode.CREATIVE) {
+
+                player.setGameMode(GameMode.CREATIVE);
+
+            }
 
         }
 
@@ -102,7 +115,7 @@ public class Listeners implements Listener {
     public boolean nearBlock(Player player) {
 
         // Declare array to hold block locations at and near the player
-        Location[] nearby = { player.getLocation(), player.getLocation().add(0.0D, 1.0D, 0.0D),
+        final Location[] nearby = { player.getLocation(), player.getLocation().add(0.0D, 1.0D, 0.0D),
                 player.getLocation().add(0.0D, 2.0D, 0.0D) };
 
         // First loop runs as many times as there are locations near and at the player
@@ -111,12 +124,12 @@ public class Listeners implements Listener {
         for (int i = 0; i < nearby.length; i++) {
 
             // Feed surrounding block faces into an array for evaluation
-            BlockFace[] arrayOfBlockFace = this.surrounding;
+            final BlockFace[] arrayOfBlockFace = this.surrounding;
             // Second loop evaluates all relevant block faces at current frame of reference
             for (int j = 0; j < arrayOfBlockFace.length; j++) {
 
                 // Isolates the block face to phase into
-                BlockFace staringAt = arrayOfBlockFace[j];
+                final BlockFace staringAt = arrayOfBlockFace[j];
 
                 // If the block is solid, initiate the phase
                 if (!nearby[i].getBlock().getRelative(staringAt, 1).isEmpty()) {

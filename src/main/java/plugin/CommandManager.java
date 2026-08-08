@@ -15,15 +15,12 @@ import org.bukkit.entity.Player;
 // Extends bukkit class to run commands.
 public class CommandManager implements CommandExecutor {
 
-    // Keep inheritance of command manager private so nothing else can hook into it
-    // and run an unrelated command.
-    private static CommandManager instance;
+    // Shared NoClip state, owned by the plugin and injected here.
+    private final NoClipManager manager;
 
-    // Static getter allows multiple players to be processed through the same class
-    // declaration.
-    public static CommandManager getInstance() {
+    public CommandManager(NoClipManager manager) {
 
-        return instance;
+        this.manager = manager;
 
     }
 
@@ -31,7 +28,7 @@ public class CommandManager implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
         // Create a colored Prefix using the Minimessage API.
-        String chatPrefix = "&8[&aNoClip &4OG&6&8] ";
+        final String chatPrefix = "&8[&aNoClip &4OG&6&8] ";
 
         // Takes over command execution if plugin is invoked.
         if (cmd.getName().equalsIgnoreCase("noclip")) {
@@ -40,48 +37,53 @@ public class CommandManager implements CommandExecutor {
             if (sender instanceof Player) {
 
                 // Convert sender to player once it has been determined that they are one.
-                Player player = (Player) sender;
+                final Player player = (Player) sender;
 
                 // Only run the command in appropriate gamemodes.
                 if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
 
-                    // Make sure the player has permission first.
-                    if (player.hasPermission("noclip.use")) {
+                    // Checks whether the "enabled" code has been run for the player yet.
+                    if (manager.isNoClipping(player.getUniqueId())) {
 
-                        // Checks whether the "enabled" code has been run for the player yet.
-                        if (Listeners.getInstance().noclip.contains(player.getName())) {
+                        // Remove player from NoClip mode
+                        manager.exitNoClip(player);
+                        // Teleport player to nearest safe location above their head.
+                        teleportToSafety(player, chatPrefix);
+                        // Return player to creative mode so they no longer phase through blocks.
+                        player.setGameMode(GameMode.CREATIVE);
 
-                            // Remove player from NoClip mode
-                            Listeners.getInstance().noclip.remove(player.getName());
-                            // Teleport player to nearest safe location above their head.
-                            teleportToSafety(player, chatPrefix);
-                            // Return player to creative mode so they no longer phase through blocks.
-                            player.setGameMode(GameMode.CREATIVE);
+                        // Create a colored disabled message using the TextComponent API.
+                        final String disabledMessage = chatPrefix + "&6NoClip mode disabled!";
+                        final TextComponent disabledMessageContainer = LegacyComponentSerializer.legacyAmpersand()
+                                .deserialize(disabledMessage);
 
-                            // Create a colored disabled message using the TextComponent API.
-                            String disabledMessage = chatPrefix + "&6NoClip mode disabled!";
-                            TextComponent disabledMessageContainer = LegacyComponentSerializer.legacyAmpersand()
-                                    .deserialize(disabledMessage);
+                        // Confirm that the plugin has been shut off to the user.
+                        player.sendMessage(disabledMessageContainer);
 
-                            // Confirm that the plugin has been shut off to the user.
-                            player.sendMessage(disabledMessageContainer);
+                    }
+                    // Engage NoClip mode, permission permitting.
+                    else if (manager.enterNoClip(player)) {
 
-                        }
-                        //
-                        else {
+                        // Create a colored enabled message using the TextComponent API.
+                        final String enabledMessage = chatPrefix + "&aNoClip mode enabled!";
+                        final TextComponent enabledMessageContainer = LegacyComponentSerializer.legacyAmpersand()
+                                .deserialize(enabledMessage);
 
-                            // Keeps track of all players in NoClip mode.
-                            Listeners.getInstance().noclip.add(player.getName());
+                        // Confirm that the plugin has been turned on to the user.
+                        player.sendMessage(enabledMessageContainer);
 
-                            // Create a colored enabled message using the TextComponent API.
-                            String enabledMessage = chatPrefix + "&aNoClip mode enabled!";
-                            TextComponent enabledMessageContainer = LegacyComponentSerializer.legacyAmpersand()
-                                    .deserialize(enabledMessage);
+                    }
+                    // The only remaining reason entry can fail here is permission.
+                    else {
 
-                            // Confirm that the plugin has been turned on to the user.
-                            player.sendMessage(enabledMessageContainer);
+                        // Create a colored permission error message using the TextComponent API.
+                        final String permissionErrorMessage = chatPrefix
+                                + "&cERROR: You do not have permission to use this command!";
+                        final TextComponent permissionErrorContainer = LegacyComponentSerializer.legacyAmpersand()
+                                .deserialize(permissionErrorMessage);
 
-                        }
+                        // Send the error message to the player.
+                        player.sendMessage(permissionErrorContainer);
 
                     }
 
@@ -90,8 +92,9 @@ public class CommandManager implements CommandExecutor {
                 else {
 
                     // Create a colored gamemode error message using the TextComponent API.
-                    String gamemodeErrorMessage = chatPrefix + "&cERROR: You must be in creative to use this command!";
-                    TextComponent gamemodeErrorContainer = LegacyComponentSerializer.legacyAmpersand()
+                    final String gamemodeErrorMessage = chatPrefix
+                            + "&cERROR: You must be in creative to use this command!";
+                    final TextComponent gamemodeErrorContainer = LegacyComponentSerializer.legacyAmpersand()
                             .deserialize(gamemodeErrorMessage);
 
                     // Send the error message to the player.
@@ -152,9 +155,9 @@ public class CommandManager implements CommandExecutor {
                     player.teleport(newPlayerLocation);
 
                     // Create a colored disabled message using the TextComponent API.
-                    String nearesetSafeLocationMessage = chatPrefix
+                    final String nearesetSafeLocationMessage = chatPrefix
                             + "&aYou have been teleported to the nearest safe location above you.";
-                    TextComponent nearesetSafeLocationContainer = LegacyComponentSerializer.legacyAmpersand()
+                    final TextComponent nearesetSafeLocationContainer = LegacyComponentSerializer.legacyAmpersand()
                             .deserialize(nearesetSafeLocationMessage);
 
                     // Inform the player that their return teleport location has changed.
