@@ -40,7 +40,9 @@ public class CommandManager implements CommandExecutor {
                 final Player player = (Player) sender;
 
                 // Only run the command in appropriate gamemodes.
-                if (player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) {
+                if (player.getGameMode() == GameMode.CREATIVE
+                        || player.getGameMode() == GameMode.SPECTATOR && manager.isNoClipping(player.getUniqueId()))
+                {
 
                     // Checks whether the "enabled" code has been run for the player yet.
                     if (manager.isNoClipping(player.getUniqueId())) {

@@ -6,6 +6,7 @@ package plugin;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -21,7 +22,7 @@ public class NoClip extends JavaPlugin {
     public void onEnable() {
 
         // Create the shared state holder before anything can consume it.
-        manager = new NoClipManager();
+        manager = new NoClipManager(new NamespacedKey(this, "enabled"));
         // Register the instantiation of the plugin (triggers loading with messages in
         // console).
         getServer().getPluginManager().registerEvents(new Listeners(manager), (Plugin) this);
@@ -42,22 +43,21 @@ public class NoClip extends JavaPlugin {
     // reboot).
     public void onDisable() {
 
+        if (manager == null)
+            return;
+
         // Iterate a snapshot copy so removal cannot upset the loop.
         for (UUID playerId : manager.activePlayers()) {
 
             // The player may already be gone; only touch the ones still online.
             final Player player = Bukkit.getPlayer(playerId);
+            // Stop the live session before any gamemode listeners can mistake
+            // shutdown cleanup for an intentional exit.
+            manager.suspendNoClip(player);
             if (player != null && player.isOnline()) {
 
                 // Get player out of block-phase (spectator) mode.
                 player.setGameMode(GameMode.CREATIVE);
-
-            }
-
-            // Remove player from active list.
-            if (player != null) {
-
-                manager.exitNoClip(player);
 
             }
 

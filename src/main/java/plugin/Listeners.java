@@ -12,6 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 public class Listeners implements Listener {
@@ -87,6 +88,18 @@ public class Listeners implements Listener {
 
     }
 
+    // /gmic off and region-enforced survival end the active toggle. Cancelled
+    // changes and creative/spectator phasing leave it intact. An inactive login
+    // may be normalized before Spawn-OG reads the saved toggle, so leave it alone.
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onGameModeChange(PlayerGameModeChangeEvent event) {
+
+        if (event.getNewGameMode() != GameMode.CREATIVE && event.getNewGameMode() != GameMode.SPECTATOR
+                && manager.isNoClipping(event.getPlayer().getUniqueId()))
+            manager.exitNoClip(event.getPlayer());
+
+    }
+
     // MONITOR so Spawn-OG's LOWEST-priority quit snapshot reads NoClip state
     // before it is cleared here. Kicks funnel into this same quit event; a
     // dedicated kick handler would run before that snapshot and corrupt it.
@@ -97,7 +110,7 @@ public class Listeners implements Listener {
         final Player player = playerThatQuit.getPlayer();
 
         // If player has a NoClip instance in the set...
-        if (manager.exitNoClip(player)) {
+        if (manager.suspendNoClip(player)) {
 
             // Leave creative behind, never spectator, so a relog on a server
             // without Spawn-OG does not strand the player phased into a block.
